@@ -1,78 +1,58 @@
-# SMI230-Sensor-API and Sensor Driver
+# SMI230-Sensor-Config
 
 ## Table of Contents
  - [Introduction](#Intro)
  - [License](#License)
- - [Sensor interfaces](#interfaces)
- - [Architecture](#Architecture)
- - [Operation examples](#examples)
 
 ## Introduction <a name=Intro></a>
 
 SMI230 is a system-in-package inertial measurement unit which offers accurate acceleration and angular rate measurements.
-Due to system-in-package approach of SMI230 (two sensors in single package), the gyroscope and acceleration data is acquired in a non-synchronized manner. 
-However, synchronization between accelerometer and gyroscope can be achieved:
-The software modules in this repository are provided as reference for SMI230 users and shall demonstrate exemplarily the usage of the following features
-- data synchronization.
+For the SMI230, different features can be enabled by loading a configuration file  (smi230_features_config.bin) into the processing unit of the accelerometer part.  
+Please refer to the technical customer documentation for further information.
 
-_Note: The sensor driver utilizes sensor api, which is following BMI08x sensor api available on [github](https://github.com/BoschSensortec/BMI08x-Sensor-API/releases/tag/bmi08x_v1.4.4)._
+Supported Features:
+*	Any-motion / slope
+*	DataSync
+*	High-g 
+*	Low-g
+*	Orientation
+*	No-motion
 
-_Note: The data synchronization feature utilizes sensor configuration, which is following BMI08x sensor configuration available on [github](https://github.com/BoschSensortec/BMI08x-Sensor-API/releases/tag/bmi08x_v1.2.0)._
+ 
+##	Data Synchronization
+Due to system-in-package approach of SMI230 (two sensors in single package), 
+the gyroscope and acceleration data is acquired in a non-synchronized manner. 
+However, synchronization between accelerometer and gyroscope can be achieved. 
 
 ## License <a name=License></a>
-See [LICENSE](LICENSE.md) file
 
-## Sensor interfaces <a name=interfaces></a>
-* I2C
-* SPI
+Copyright (c) 2020, 2021 Bosch Sensortec GmbH. All rights reserved.
 
-## Architecture <a name=Architecture></a>
-```
-                  User space
--------------------------------------------------------
-                 |          |
-               sysfs       dev
-                 \          /
-               input-subsystem
-	             |
-sensor_API <-- smi230_driver --> smi230_SPI/I2C_driver
-                                           |
-                                      SPI/I2C_bus
-                                           |
--------------------------------------------------------
-                  Hardware
-```
-## Operation examples <a name=examples></a>
-1. Userspace
-The driver exposes a device file node under /dev/input/event*, which can be read as a normal Linux file. Tools like evtest can also be used for read data out. Eg.:
-```
-sudo evtest /dev/input/event0
-```
-The data will be displayed on the console with timestamp.
+BSD-3-Clause
 
-2. Sysfs
-The driver also exposes a set of sysfs nodes under /sys/devices/virtual/input/input*, where users can get information about the sensor and also control the sensor. Eg.:
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
 
-```
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
 
-# read the chip id
-cat /sys/devices/virtual/input/input0/chip_id
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
 
-# read the synced acc data 
-cat /sys/devices/virtual/input/input0/data_sync
+3. Neither the name of the copyright holder nor the names of its
+   contributors may be used to endorse or promote products derived from
+   this software without specific prior written permission.
 
-# read the asynced acc data 
-cat /sys/devices/virtual/input/input0/acc_value
-
-# read the gyro data 
-cat /sys/devices/virtual/input/input0/gyro_value
-
-# read the acc power config 
-cat /sys/devices/virtual/input/input0/acc_pw_cfg
-
-# set the acc power config active 
-echo 0 > /sys/devices/virtual/input/input0/acc_pw_cfg
-
-# set the acc power config suspend 
-echo 3 > /sys/devices/virtual/input/input0/acc_pw_cfg
-```
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING
+IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
